@@ -11,5 +11,5 @@ https://www.notion.so/Vulkan-15b53c648d5e80478961d3259d8ff022
 
 ### Current Progress
 - [x] Add Swap chain.
-- [ ] Add Command Buffer.
+- [x] Add Command Buffer.
 - [ ] Add Vertex Buffer.
