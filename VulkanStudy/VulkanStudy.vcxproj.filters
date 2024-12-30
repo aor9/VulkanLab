@@ -18,39 +18,39 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AoraWindow.cpp">
+    <ClCompile Include="src\AoraWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="first_app.cpp">
+    <ClCompile Include="src\first_app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AoraPipeline.cpp">
+    <ClCompile Include="src\AoraPipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AoraDevice.cpp">
+    <ClCompile Include="src\AoraDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AoraSwap_hain.cpp">
+    <ClCompile Include="src\AoraSwap_hain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AoraWindow.h">
+    <ClInclude Include="src\AoraWindow.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="first_app.h">
+    <ClInclude Include="src\first_app.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="AoraPipeline.h">
+    <ClInclude Include="src\AoraPipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AoraDevice.h">
+    <ClInclude Include="src\AoraDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AoraSwapchain.h">
+    <ClInclude Include="src\AoraSwapchain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -61,7 +61,7 @@
     <None Include="shaders\simple_shader.frag">
       <Filter>Source Files\shaders</Filter>
     </None>
-    <None Include="compile.sh">
+    <None Include="src\compile.sh">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

@@ -133,22 +133,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AoraDevice.cpp" />
-    <ClCompile Include="first_app.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="AoraPipeline.cpp" />
-    <ClCompile Include="AoraSwap_hain.cpp" />
-    <ClCompile Include="AoraWindow.cpp" />
+    <ClCompile Include="src\AoraDevice.cpp" />
+    <ClCompile Include="src\first_app.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\AoraPipeline.cpp" />
+    <ClCompile Include="src\AoraSwap_hain.cpp" />
+    <ClCompile Include="src\AoraWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AoraDevice.h" />
-    <ClInclude Include="first_app.h" />
-    <ClInclude Include="AoraPipeline.h" />
-    <ClInclude Include="AoraSwapchain.h" />
-    <ClInclude Include="AoraWindow.h" />
+    <ClInclude Include="src\AoraDevice.h" />
+    <ClInclude Include="src\first_app.h" />
+    <ClInclude Include="src\AoraPipeline.h" />
+    <ClInclude Include="src\AoraSwapchain.h" />
+    <ClInclude Include="src\AoraWindow.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="compile.sh" />
+    <None Include="src\compile.sh" />
     <None Include="shaders\simple_shader.frag" />
     <None Include="shaders\simple_shader.vert" />
   </ItemGroup>
