@@ -1,7 +1,9 @@
 **/a.out
 build
 build/**
-.vscode
+.vs
+x64
+*.sln
 **/.env
 **/.obj
 *.spv
