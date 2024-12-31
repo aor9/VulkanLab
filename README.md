@@ -1,4 +1,4 @@
-# VulkanStudy
+# VulkanLab
 
 vulkan api와 렌더링 기술을 공부하거나 테스트 하기 위한 repository 입니다.
 
