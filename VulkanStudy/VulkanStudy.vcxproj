@@ -134,6 +134,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\AoraDevice.cpp" />
+    <ClCompile Include="src\AoraModel.cpp" />
     <ClCompile Include="src\first_app.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\AoraPipeline.cpp" />
@@ -142,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AoraDevice.h" />
+    <ClInclude Include="src\AoraModel.h" />
     <ClInclude Include="src\first_app.h" />
     <ClInclude Include="src\AoraPipeline.h" />
     <ClInclude Include="src\AoraSwapchain.h" />

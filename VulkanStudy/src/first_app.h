@@ -4,6 +4,7 @@
 #include "AoraPipeline.h"
 #include "AoraDevice.h"
 #include "AoraSwapchain.h"
+#include "AoraModel.h"
 
 // std
 #include <memory>
@@ -26,6 +27,8 @@ namespace aor
 		void run();
 
 	private:
+		void sierpinski(std::vector<AoraModel::Vertex>& vertices, int depth, glm::vec2 left, glm::vec2 right, glm::vec2 top);
+		void loadModels();
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
@@ -37,5 +40,6 @@ namespace aor
 		std::unique_ptr<AoraPipeline> aoraPipeline;
 		VkPipelineLayout pipelineLayout;
 		std::vector<VkCommandBuffer> commandBuffers;
+		std::unique_ptr<AoraModel> aoraModel;
 	};
 }
