@@ -33,7 +33,7 @@
     <ClCompile Include="src\AoraDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AoraSwap_hain.cpp">
+    <ClCompile Include="src\AoraSwapchain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AoraModel.cpp">

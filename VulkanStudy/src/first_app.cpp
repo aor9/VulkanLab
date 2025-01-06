@@ -30,29 +30,14 @@ namespace aor
 		vkDeviceWaitIdle(aoraDevice.device());
 	}
 
-	void FirstApp::sierpinski(std::vector<AoraModel::Vertex>& vertices, int depth, glm::vec2 left, glm::vec2 right, glm::vec2 top)
-	{
-		if (depth <= 0)
-		{
-			vertices.push_back({ top });
-			vertices.push_back({ right });
-			vertices.push_back({ left });
-		}
-		else
-		{
-			auto leftTop = 0.5f * (left + top);
-			auto rightTop = 0.5f * (right + top);
-			auto leftRight = 0.5f * (left + right);
-			sierpinski(vertices, depth - 1, left, leftRight, leftTop);
-			sierpinski(vertices, depth - 1, leftRight, right, rightTop);
-			sierpinski(vertices, depth - 1, leftTop, rightTop, top);
-		}
-	}
-
 	void FirstApp::loadModels()
 	{
-		std::vector<AoraModel::Vertex> vertices{};
-		sierpinski(vertices, 7, { -0.5f, 0.5f }, { 0.5f, 0.5f }, { 0.0f, -0.5f });
+		std::vector<AoraModel::Vertex> vertices{
+			{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+			{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+			{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+		};
+		
 		aoraModel = std::make_unique<AoraModel>(aoraDevice, vertices);
 	}
 
