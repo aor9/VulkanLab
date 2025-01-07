@@ -3,6 +3,7 @@
 //std
 #include <stdexcept>
 #include <array>
+#include <cassert>
 
 namespace aor
 {
@@ -10,7 +11,7 @@ namespace aor
 	{
 		loadModels();
 		createPipelineLayout();
-		createPipeline();
+		recreateSwapChain();
 		createCommandBuffers();
 	}
 
@@ -57,13 +58,13 @@ namespace aor
 
 	void FirstApp::createPipeline()
 	{
+		assert(aoraSwapchain != nullptr && "Cannot create pipeline before swap chain");
+		assert(pipelineLayout != nullptr && "Cannot create pipeline before pipeline layout");
+
 		PipelineConfigInfo pipelineConfig{};
-		AoraPipeline::defaultPipelineConfigInfo(
-			pipelineConfig,
-			aoraSwapchain.width(),
-			aoraSwapchain.height());
-		
-		pipelineConfig.renderPass = aoraSwapchain.getRenderPass();
+		AoraPipeline::defaultPipelineConfigInfo(pipelineConfig);
+	
+		pipelineConfig.renderPass = aoraSwapchain->getRenderPass();
 		pipelineConfig.pipelineLayout = pipelineLayout;
 		aoraPipeline = std::make_unique<AoraPipeline>(
 			aoraDevice,
@@ -73,10 +74,38 @@ namespace aor
 		);
 	}
 
+	void FirstApp::recreateSwapChain()
+	{
+		auto extent = aoraWindow.getExtent();
+		while (extent.width == 0 || extent.height == 0)
+		{
+			extent = aoraWindow.getExtent();
+			glfwWaitEvents();
+		}
+
+		vkDeviceWaitIdle(aoraDevice.device());
+
+		if (aoraSwapchain == nullptr)
+		{
+			aoraSwapchain = std::make_unique<AoraSwapchain>(aoraDevice, extent);
+		}
+		else
+		{
+			aoraSwapchain = std::make_unique<AoraSwapchain>(aoraDevice, extent, std::move(aoraSwapchain));
+			if (aoraSwapchain->imageCount() != commandBuffers.size())
+			{
+				freeCommandBuffers();
+				createCommandBuffers();
+			}
+		}
+		
+		createPipeline();
+	}
+
 	void FirstApp::createCommandBuffers()
 	{
 		
-		commandBuffers.resize(aoraSwapchain.imageCount());
+		commandBuffers.resize(aoraSwapchain->imageCount());
 
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -89,56 +118,91 @@ namespace aor
 		{
 			throw std::runtime_error("failed to allocate command buffers!");
 		}
-
-		for (int i = 0; i < commandBuffers.size(); i++)
-		{
-			VkCommandBufferBeginInfo beginInfo{};
-			beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-			if(vkBeginCommandBuffer(commandBuffers[i], &beginInfo) != VK_SUCCESS)
-			{
-				throw std::runtime_error("failed to recording command buffer!");
-			}
-
-			VkRenderPassBeginInfo renderPassInfo{};
-			renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-			renderPassInfo.renderPass = aoraSwapchain.getRenderPass();
-			renderPassInfo.framebuffer = aoraSwapchain.getFrameBuffer(i);
-
-			renderPassInfo.renderArea.offset = { 0, 0 };
-			renderPassInfo.renderArea.extent = aoraSwapchain.getSwapChainExtent();
-
-			std::array<VkClearValue, 2> clearValues{};
-			clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f };
-			clearValues[1].depthStencil = { 1.0f, 0 };
-			renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-			renderPassInfo.pClearValues = clearValues.data();
-
-			vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-			aoraPipeline->bind(commandBuffers[i]);
-			aoraModel->bind(commandBuffers[i]);
-			aoraModel->draw(commandBuffers[i]);
-
-			vkCmdEndRenderPass(commandBuffers[i]);
-			if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS)
-			{
-				throw std::runtime_error("failed to record command buffer!");
-			}
-		}
 	}
 
+	void FirstApp::freeCommandBuffers()
+	{
+		vkFreeCommandBuffers(
+			aoraDevice.device(), 
+			aoraDevice.getCommandPool(), 
+			static_cast<uint32_t>(commandBuffers.size()), 
+			commandBuffers.data());
+		commandBuffers.clear();
+	}
+
+	void FirstApp::recordCommandBuffer(int imageIndex)
+	{
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+		if (vkBeginCommandBuffer(commandBuffers[imageIndex], &beginInfo) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to recording command buffer!");
+		}
+
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = aoraSwapchain->getRenderPass();
+		renderPassInfo.framebuffer = aoraSwapchain->getFrameBuffer(imageIndex);
+
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = aoraSwapchain->getSwapChainExtent();
+
+		std::array<VkClearValue, 2> clearValues{};
+		clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f };
+		clearValues[1].depthStencil = { 1.0f, 0 };
+		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+		renderPassInfo.pClearValues = clearValues.data();
+
+		vkCmdBeginRenderPass(commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = static_cast<float>(aoraSwapchain->getSwapChainExtent().width);
+		viewport.height = static_cast<float>(aoraSwapchain->getSwapChainExtent().height);
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		VkRect2D scissor{ {0, 0}, aoraSwapchain->getSwapChainExtent() };
+		vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &viewport);
+		vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &scissor);
+
+		aoraPipeline->bind(commandBuffers[imageIndex]);
+		aoraModel->bind(commandBuffers[imageIndex]);
+		aoraModel->draw(commandBuffers[imageIndex]);
+
+		vkCmdEndRenderPass(commandBuffers[imageIndex]);
+		if (vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to record command buffer!");
+		}
+	}
+	
 	void FirstApp::drawFrame()
 	{
 		uint32_t imageIndex;
-		auto result = aoraSwapchain.acquireNextImage(&imageIndex);
+		auto result = aoraSwapchain->acquireNextImage(&imageIndex);
+
+		if (result == VK_ERROR_OUT_OF_DATE_KHR)
+		{
+			recreateSwapChain();
+			return;
+		}
 
 		if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
 		{
 			throw std::runtime_error("failed to acquire swap chain image!");
 		}
 
-		result = aoraSwapchain.submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
+		recordCommandBuffer(imageIndex);
+		result = aoraSwapchain->submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
+		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || aoraWindow.wasWindowResized())
+		{
+			aoraWindow.resetWindowResizedFlag();
+			recreateSwapChain();
+			return;
+		}
+
 		if (result != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to present swap chain image!");

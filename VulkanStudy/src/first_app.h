@@ -31,11 +31,14 @@ namespace aor
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
+		void freeCommandBuffers();
 		void drawFrame();
+		void recreateSwapChain();
+		void recordCommandBuffer(int imageIndex);
 
 		AoraWindow aoraWindow{ WIDTH, HEIGHT, "Hello Vulkan!" };
 		AoraDevice aoraDevice{ aoraWindow };
-		AoraSwapchain aoraSwapchain{ aoraDevice, aoraWindow.getExtent() };
+		std::unique_ptr<AoraSwapchain> aoraSwapchain;
 		std::unique_ptr<AoraPipeline> aoraPipeline;
 		VkPipelineLayout pipelineLayout;
 		std::vector<VkCommandBuffer> commandBuffers;

@@ -34,7 +34,7 @@ namespace aor {
 
         // Not copyable or movable
         AoraDevice(const AoraDevice&) = delete;
-        void operator=(const AoraDevice&) = delete;
+        AoraDevice& operator=(const AoraDevice&) = delete;
         AoraDevice(AoraDevice&&) = delete;
         AoraDevice& operator=(AoraDevice&&) = delete;
 

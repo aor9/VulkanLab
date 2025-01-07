@@ -6,6 +6,7 @@
 #include <vulkan/vulkan.h>
 
 // std lib headers
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -16,10 +17,11 @@ namespace aor {
         static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
         AoraSwapchain(AoraDevice& deviceRef, VkExtent2D windowExtent);
+        AoraSwapchain(AoraDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<AoraSwapchain> previous);
         ~AoraSwapchain();
 
         AoraSwapchain(const AoraSwapchain&) = delete;
-        void operator=(const AoraSwapchain&) = delete;
+        AoraSwapchain& operator=(const AoraSwapchain&) = delete;
 
         VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
         VkRenderPass getRenderPass() { return renderPass; }
@@ -39,6 +41,7 @@ namespace aor {
         VkResult submitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex);
 
     private:
+        void init();
         void createSwapChain();
         void createImageViews();
         void createDepthResources();
@@ -69,6 +72,7 @@ namespace aor {
         VkExtent2D windowExtent;
 
         VkSwapchainKHR swapChain;
+        std::shared_ptr<AoraSwapchain> oldSwapchain;
 
         std::vector<VkSemaphore> imageAvailableSemaphores;
         std::vector<VkSemaphore> renderFinishedSemaphores;
