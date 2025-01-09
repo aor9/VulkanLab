@@ -6,7 +6,8 @@ vulkan api와 렌더링 기술을 공부하거나 테스트 하기 위한 reposi
 https://www.notion.so/Vulkan-15b53c648d5e80478961d3259d8ff022
 
 ### Current State
-![image](https://github.com/user-attachments/assets/a9a220ce-3bc3-4033-9c80-82bee443e751)
+![image](https://github.com/user-attachments/assets/163f0c59-2bc6-476d-bbb7-e5419b4dd0e2)
+
 
 
 ### Current Progress
