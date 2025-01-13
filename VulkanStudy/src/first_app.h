@@ -5,6 +5,7 @@
 #include "AoraDevice.h"
 #include "AoraSwapchain.h"
 #include "AoraModel.h"
+#include "AoraGameObject.h"
 
 // std
 #include <memory>
@@ -27,7 +28,7 @@ namespace aor
 		void run();
 
 	private:
-		void loadModels();
+		void loadGameObjects();
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
@@ -35,6 +36,7 @@ namespace aor
 		void drawFrame();
 		void recreateSwapChain();
 		void recordCommandBuffer(int imageIndex);
+		void renderGameObjects(VkCommandBuffer commandBuffer);
 
 		AoraWindow aoraWindow{ WIDTH, HEIGHT, "Hello Vulkan!" };
 		AoraDevice aoraDevice{ aoraWindow };
@@ -42,6 +44,6 @@ namespace aor
 		std::unique_ptr<AoraPipeline> aoraPipeline;
 		VkPipelineLayout pipelineLayout;
 		std::vector<VkCommandBuffer> commandBuffers;
-		std::unique_ptr<AoraModel> aoraModel;
+		std::vector<AoraGameObject> gameObjects;
 	};
 }
