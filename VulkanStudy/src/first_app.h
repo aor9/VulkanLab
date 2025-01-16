@@ -1,11 +1,9 @@
 #pragma once
 
 #include "AoraWindow.h"
-#include "AoraPipeline.h"
 #include "AoraDevice.h"
-#include "AoraSwapchain.h"
-#include "AoraModel.h"
 #include "AoraGameObject.h"
+#include "AoraRenderer.h"
 
 // std
 #include <memory>
@@ -29,21 +27,11 @@ namespace aor
 
 	private:
 		void loadGameObjects();
-		void createPipelineLayout();
-		void createPipeline();
-		void createCommandBuffers();
-		void freeCommandBuffers();
-		void drawFrame();
-		void recreateSwapChain();
-		void recordCommandBuffer(int imageIndex);
-		void renderGameObjects(VkCommandBuffer commandBuffer);
 
 		AoraWindow aoraWindow{ WIDTH, HEIGHT, "Hello Vulkan!" };
 		AoraDevice aoraDevice{ aoraWindow };
-		std::unique_ptr<AoraSwapchain> aoraSwapchain;
-		std::unique_ptr<AoraPipeline> aoraPipeline;
-		VkPipelineLayout pipelineLayout;
-		std::vector<VkCommandBuffer> commandBuffers;
+		AoraRenderer aoraRenderer{ aoraWindow, aoraDevice };
+
 		std::vector<AoraGameObject> gameObjects;
 	};
 }

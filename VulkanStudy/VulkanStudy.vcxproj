@@ -136,20 +136,24 @@
     <ClCompile Include="src\AoraDevice.cpp" />
     <ClCompile Include="src\AoraGameObject.cpp" />
     <ClCompile Include="src\AoraModel.cpp" />
+    <ClCompile Include="src\AoraRenderer.cpp" />
     <ClCompile Include="src\first_app.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\AoraPipeline.cpp" />
     <ClCompile Include="src\AoraSwapchain.cpp" />
     <ClCompile Include="src\AoraWindow.cpp" />
+    <ClCompile Include="src\SimpleRenderSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AoraDevice.h" />
     <ClInclude Include="src\AoraGameObject.h" />
     <ClInclude Include="src\AoraModel.h" />
+    <ClInclude Include="src\AoraRenderer.h" />
     <ClInclude Include="src\first_app.h" />
     <ClInclude Include="src\AoraPipeline.h" />
     <ClInclude Include="src\AoraSwapchain.h" />
     <ClInclude Include="src\AoraWindow.h" />
+    <ClInclude Include="src\SimpleRenderSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\compile.sh" />
