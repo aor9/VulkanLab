@@ -43,23 +43,73 @@ namespace aor
 		vkDeviceWaitIdle(aoraDevice.device());
 	}
 
+    std::unique_ptr<AoraModel> createCubeModel(AoraDevice& device, glm::vec3 offset) 
+    {
+        std::vector<AoraModel::Vertex> vertices{
+
+            // left face (white)
+            {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
+            {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
+            {{-.5f, -.5f, .5f}, {.9f, .9f, .9f}},
+            {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
+            {{-.5f, .5f, -.5f}, {.9f, .9f, .9f}},
+            {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
+
+            // right face (yellow)
+            {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
+            {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
+            {{.5f, -.5f, .5f}, {.8f, .8f, .1f}},
+            {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
+            {{.5f, .5f, -.5f}, {.8f, .8f, .1f}},
+            {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
+
+            // top face (orange, remember y axis points down)
+            {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+            {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+            {{-.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+            {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+            {{.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+            {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+
+            // bottom face (red)
+            {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+            {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
+            {{-.5f, .5f, .5f}, {.8f, .1f, .1f}},
+            {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+            {{.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+            {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
+
+            // nose face (blue)
+            {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+            {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+            {{-.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+            {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+            {{.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+            {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+
+            // tail face (green)
+            {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+            {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+            {{-.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+            {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+            {{.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+            {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+
+        };
+        for (auto& v : vertices) {
+            v.position += offset;
+        }
+        return std::make_unique<AoraModel>(device, vertices);
+    }
+
 	void FirstApp::loadGameObjects()
 	{
-		std::vector<AoraModel::Vertex> vertices{
-			{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-			{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-			{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
-		};
-		
-		auto aoraModel = std::make_shared<AoraModel>(aoraDevice, vertices);
+        std::shared_ptr<AoraModel> aoraModel = createCubeModel(aoraDevice, { .0f, .0f, .0f });
 
-		auto triangle = AoraGameObject::createGameObject();
-		triangle.model = aoraModel;
-		triangle.color = { .1f, .8f, .1f };
-		triangle.transform2d.translation.x = .2f;
-		triangle.transform2d.scale = { 2.f, .5f };
-		triangle.transform2d.rotation = .25f * glm::two_pi<float>();
-
-		gameObjects.push_back(std::move(triangle));
+        auto cube = AoraGameObject::createGameObject();
+        cube.model = aoraModel;
+        cube.transform.translation = { .0f, .0f, .5f };
+        cube.transform.scale = { .5f, .5f, .5f };
+        gameObjects.push_back(std::move(cube));
 	}
 }
