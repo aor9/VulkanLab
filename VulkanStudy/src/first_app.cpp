@@ -1,5 +1,6 @@
 #include "first_app.h"
 
+#include "AoraCamera.h"
 #include "SimpleRenderSystem.h"
 
 //libs
@@ -22,10 +23,15 @@ namespace aor
 	void FirstApp::run()
 	{
 		SimpleRenderSystem simpleRenderSystem{ aoraDevice, aoraRenderer.getSwapChainRenderPass() };
+        AoraCamera camera{};
 
 		while (!aoraWindow.shouldClose())
 		{
 			glfwPollEvents();
+
+            float aspect = aoraRenderer.getAspectRatio();
+            //camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
+            camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 10.f);
 			
 			if (auto commandBuffer = aoraRenderer.beginFrame())
 			{
@@ -34,7 +40,7 @@ namespace aor
 				// end offscreen shadow pass
 
 				aoraRenderer.beginSwapChainRenderPass(commandBuffer);
-				simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects);
+				simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
 				aoraRenderer.endSwapChainRenderPass(commandBuffer);
 				aoraRenderer.endFrame();
 			}
@@ -108,7 +114,7 @@ namespace aor
 
         auto cube = AoraGameObject::createGameObject();
         cube.model = aoraModel;
-        cube.transform.translation = { .0f, .0f, .5f };
+        cube.transform.translation = { .0f, .0f, 2.5f };
         cube.transform.scale = { .5f, .5f, .5f };
         gameObjects.push_back(std::move(cube));
 	}

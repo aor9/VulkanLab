@@ -25,6 +25,7 @@ namespace aor
 		AoraRenderer& operator = (const AoraRenderer&) = delete;
 
 		VkRenderPass getSwapChainRenderPass() const { return aoraSwapchain->getRenderPass(); }
+		float getAspectRatio() const { return aoraSwapchain->extentAspectRatio(); }
 		bool bIsFrameInProgress() const { return bIsFrameStarted; }
 
 		VkCommandBuffer getCurrentCommandBuffer() const {

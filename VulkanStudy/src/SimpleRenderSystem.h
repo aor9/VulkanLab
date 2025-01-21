@@ -1,7 +1,6 @@
 #pragma once
 
-#include "AoraWindow.h"
-#include "AoraPipeline.h"
+#include "AoraCamera.h"
 #include "AoraDevice.h"
 #include "AoraGameObject.h"
 #include "AoraRenderer.h"
@@ -24,7 +23,10 @@ namespace aor
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
 		SimpleRenderSystem& operator = (const SimpleRenderSystem&) = delete;
 
-		void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<AoraGameObject>& gameObjects);
+		void renderGameObjects(
+			VkCommandBuffer commandBuffer, 
+			std::vector<AoraGameObject>& gameObjects, 
+			const AoraCamera& camera);
 
 	private:
 		void createPipelineLayout();
