@@ -1,5 +1,6 @@
 #include "first_app.h"
 
+#include "KeyboardMovementController.h"
 #include "AoraCamera.h"
 #include "SimpleRenderSystem.h"
 
@@ -12,6 +13,7 @@
 //std
 #include <stdexcept>
 #include <array>
+#include <chrono>
 #include <cassert>
 
 namespace aor
@@ -25,12 +27,25 @@ namespace aor
 		SimpleRenderSystem simpleRenderSystem{ aoraDevice, aoraRenderer.getSwapChainRenderPass() };
         AoraCamera camera{};
 
+        auto viewerObject = AoraGameObject::createGameObject();
+        KeyboardMovementController cameraController{};
+
+        auto currentTime = std::chrono::high_resolution_clock::now();
+
 		while (!aoraWindow.shouldClose())
 		{
 			glfwPollEvents();
 
+            auto newTime = std::chrono::high_resolution_clock::now();
+            float frameTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
+            currentTime = newTime;
+
+            frameTime = glm::min(frameTime, MAX_FRAME_TIME);
+
+            cameraController.moveInPlaneXZ(aoraWindow.getGLFWwindow(), frameTime, viewerObject);
+            camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
+
             float aspect = aoraRenderer.getAspectRatio();
-            //camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
             camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 10.f);
 			
 			if (auto commandBuffer = aoraRenderer.beginFrame())

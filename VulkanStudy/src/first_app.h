@@ -33,5 +33,7 @@ namespace aor
 		AoraRenderer aoraRenderer{ aoraWindow, aoraDevice };
 
 		std::vector<AoraGameObject> gameObjects;
+
+		const float MAX_FRAME_TIME = 240.f;
 	};
 }

@@ -28,7 +28,7 @@ namespace aor
 	{
 		std::ifstream file{ filepath, std::ios::ate | std::ios::binary };
 
-		if (!file.is_open())
+		if (!file.is_open()) 
 		{
 			throw std::runtime_error("failed to open file: " + filepath);
 		}
