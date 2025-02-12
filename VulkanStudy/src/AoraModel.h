@@ -23,7 +23,13 @@ namespace aor
 			static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
 		};
 
-		AoraModel(AoraDevice &device, const std::vector<Vertex> &vertices);
+		struct Data
+		{
+			std::vector<Vertex> vertices{};
+			std::vector<uint32_t> indices{};
+		};
+
+		AoraModel(AoraDevice &device, const AoraModel::Data &data);
 		~AoraModel();
 
 		AoraModel(const AoraModel&) = delete;
@@ -34,10 +40,17 @@ namespace aor
 
 	private:
 		void createVertexBuffers(const std::vector<Vertex>& vertices);
+		void createIndexBuffers(const std::vector<uint32_t>& indices);
 
 		AoraDevice& aoraDevice;
+
 		VkBuffer vertexBuffer;
 		VkDeviceMemory vertexBufferMemory;
 		uint32_t vertexCount;
+
+		bool bHasIndexBuffer = false;
+		VkBuffer indexBuffer;
+		VkDeviceMemory indexBufferMemory;
+		uint32_t indexCount;
 	};
 }
