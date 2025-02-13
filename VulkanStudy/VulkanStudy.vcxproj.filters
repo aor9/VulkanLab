@@ -89,6 +89,9 @@
     <ClInclude Include="src\KeyboardMovementController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AoraUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple_shader.vert">
