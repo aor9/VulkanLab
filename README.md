@@ -6,7 +6,8 @@ vulkan api와 렌더링 기술을 공부하거나 테스트 하기 위한 reposi
 https://www.notion.so/Vulkan-15b53c648d5e80478961d3259d8ff022
 
 ### Current State
-![image](https://github.com/user-attachments/assets/07d1b4db-f4cf-4f64-88cf-4e3133bcac0f)
+![image](https://github.com/user-attachments/assets/15b7c78e-e783-41f4-8e50-a08d9dc82b98)
+
 
 
 
@@ -19,4 +20,4 @@ https://www.notion.so/Vulkan-15b53c648d5e80478961d3259d8ff022
 - [x] 2d transformation.
 - [x] game loop, user input
 - [x] loading 3d model
-- [] add lighting
+- [x] add diffuse lighting
