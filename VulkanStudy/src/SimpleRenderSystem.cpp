@@ -67,13 +67,10 @@ namespace aor
 	}
 
 
-	void SimpleRenderSystem::renderGameObjects(
-		VkCommandBuffer commandBuffer,
-		std::vector<AoraGameObject>& gameObjects,
-		const AoraCamera& camera)
+	void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo, std::vector<AoraGameObject>& gameObjects)
 	{
-		aoraPipeline->bind(commandBuffer);
-		auto projectionView = camera.getProjection() * camera.getView();
+		aoraPipeline->bind(frameInfo.commandBuffer);
+		auto projectionView = frameInfo.camera.getProjection() * frameInfo.camera.getView();
 
 		for (auto& obj : gameObjects)
 		{
@@ -83,14 +80,14 @@ namespace aor
 			push.normalMatrix = obj.transform.normalMatrix();
 
 			vkCmdPushConstants(
-				commandBuffer,
+				frameInfo.commandBuffer,
 				pipelineLayout,
 				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
 				0,
 				sizeof(SimplePushConstantData),
 				&push);
-			obj.model->bind(commandBuffer);
-			obj.model->draw(commandBuffer);
+			obj.model->bind(frameInfo.commandBuffer);
+			obj.model->draw(frameInfo.commandBuffer);
 		}
 	}
 

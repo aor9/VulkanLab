@@ -4,6 +4,7 @@
 #include "AoraDevice.h"
 #include "AoraGameObject.h"
 #include "AoraRenderer.h"
+#include "AoraFrameInfo.h"
 
 // std
 #include <memory>
@@ -23,10 +24,7 @@ namespace aor
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
 		SimpleRenderSystem& operator = (const SimpleRenderSystem&) = delete;
 
-		void renderGameObjects(
-			VkCommandBuffer commandBuffer, 
-			std::vector<AoraGameObject>& gameObjects, 
-			const AoraCamera& camera);
+		void renderGameObjects(FrameInfo& frameInfo, std::vector<AoraGameObject>& gameObjects);
 
 	private:
 		void createPipelineLayout();

@@ -3,6 +3,7 @@
 #include "KeyboardMovementController.h"
 #include "AoraCamera.h"
 #include "SimpleRenderSystem.h"
+#include "AoraBuffer.h"
 
 //libs
 #define GLM_FORCE_RADIANS
@@ -15,15 +16,35 @@
 #include <array>
 #include <chrono>
 #include <cassert>
+#include <numeric>
 
 namespace aor
 {
+	struct GlobalUbo
+	{
+		glm::mat4 projectionView{ 1.f };
+		glm::vec3 lightDirection = glm::normalize(glm::vec3{ 1.f, -3.f, -1.f });
+	};
+
 	FirstApp::FirstApp() { loadGameObjects(); }
 
 	FirstApp::~FirstApp() {}
 
 	void FirstApp::run()
 	{
+		std::vector<std::unique_ptr<AoraBuffer>> uboBuffers(AoraSwapchain::MAX_FRAMES_IN_FLIGHT);
+		for (int i = 0; i < uboBuffers.size(); i++)
+		{
+			uboBuffers[i] = std::make_unique<AoraBuffer>(
+				aoraDevice,
+				sizeof(GlobalUbo),
+				1,
+				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+			);
+			uboBuffers[i]->map();
+		}
+
 		SimpleRenderSystem simpleRenderSystem{ aoraDevice, aoraRenderer.getSwapChainRenderPass() };
         AoraCamera camera{};
 
@@ -50,12 +71,18 @@ namespace aor
 			
 			if (auto commandBuffer = aoraRenderer.beginFrame())
 			{
-				// begin offscreen shadow pass
-				// render shadow casting objects
-				// end offscreen shadow pass
+				int frameIndex = aoraRenderer.getFrameIndex();
+				FrameInfo frameInfo{frameIndex,	frameTime, commandBuffer, camera};
 
+				// update
+				GlobalUbo ubo{};
+				ubo.projectionView = camera.getProjection() * camera.getView();
+				uboBuffers[frameIndex]->writeToBuffer(&ubo);
+				uboBuffers[frameIndex]->flush();
+
+				// render
 				aoraRenderer.beginSwapChainRenderPass(commandBuffer);
-				simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
+				simpleRenderSystem.renderGameObjects(frameInfo, gameObjects);
 				aoraRenderer.endSwapChainRenderPass(commandBuffer);
 				aoraRenderer.endFrame();
 			}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AoraDevice.h"
+#include "AoraBuffer.h"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -57,13 +58,11 @@ namespace aor
 
 		AoraDevice& aoraDevice;
 
-		VkBuffer vertexBuffer;
-		VkDeviceMemory vertexBufferMemory;
+		std::unique_ptr<AoraBuffer> vertexBuffer;
 		uint32_t vertexCount;
 
 		bool bHasIndexBuffer = false;
-		VkBuffer indexBuffer;
-		VkDeviceMemory indexBufferMemory;
+		std::unique_ptr<AoraBuffer> indexBuffer;
 		uint32_t indexCount;
 	};
 }
