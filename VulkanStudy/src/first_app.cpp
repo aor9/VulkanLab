@@ -22,11 +22,20 @@ namespace aor
 {
 	struct GlobalUbo
 	{
-		glm::mat4 projectionView{ 1.f };
-		glm::vec3 lightDirection = glm::normalize(glm::vec3{ 1.f, -3.f, -1.f });
+		alignas(16) glm::mat4 projectionView{ 1.f };
+		alignas(16) glm::vec3 lightDirection = glm::normalize(glm::vec3{ 1.f, -3.f, -1.f });
 	};
 
-	FirstApp::FirstApp() { loadGameObjects(); }
+	FirstApp::FirstApp() 
+	{ 
+		globalPool = 
+			AoraDescriptorPool::Builder(aoraDevice)
+			.setMaxSets(AoraSwapchain::MAX_FRAMES_IN_FLIGHT)
+			.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, AoraSwapchain::MAX_FRAMES_IN_FLIGHT)
+			.build();
+
+		loadGameObjects(); 
+	}
 
 	FirstApp::~FirstApp() {}
 
@@ -45,7 +54,21 @@ namespace aor
 			uboBuffers[i]->map();
 		}
 
-		SimpleRenderSystem simpleRenderSystem{ aoraDevice, aoraRenderer.getSwapChainRenderPass() };
+		auto globalSetLayout = 
+			AoraDescriptorSetLayout::Builder(aoraDevice)
+			.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+			.build();
+
+		std::vector<VkDescriptorSet> globalDescriptorSet(AoraSwapchain::MAX_FRAMES_IN_FLIGHT);
+		for (int i = 0; i < globalDescriptorSet.size(); i++)
+		{
+			auto bufferInfo = uboBuffers[i]->descriptorInfo();
+			AoraDescriptorWriter(*globalSetLayout, *globalPool)
+				.writeBuffer(0, &bufferInfo)
+				.build(globalDescriptorSet[i]);
+		}
+
+		SimpleRenderSystem simpleRenderSystem{ aoraDevice, aoraRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout()};
         AoraCamera camera{};
 
         auto viewerObject = AoraGameObject::createGameObject();
@@ -72,7 +95,7 @@ namespace aor
 			if (auto commandBuffer = aoraRenderer.beginFrame())
 			{
 				int frameIndex = aoraRenderer.getFrameIndex();
-				FrameInfo frameInfo{frameIndex,	frameTime, commandBuffer, camera};
+				FrameInfo frameInfo{frameIndex,	frameTime, commandBuffer, camera, globalDescriptorSet[frameIndex]};
 
 				// update
 				GlobalUbo ubo{};

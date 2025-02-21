@@ -18,7 +18,7 @@ namespace aor
 		static constexpr int WIDTH = 800;
 		static constexpr int HEIGHT = 600;
 
-		SimpleRenderSystem(AoraDevice& device, VkRenderPass renderPass);
+		SimpleRenderSystem(AoraDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout);
 		~SimpleRenderSystem();
 
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
@@ -27,7 +27,7 @@ namespace aor
 		void renderGameObjects(FrameInfo& frameInfo, std::vector<AoraGameObject>& gameObjects);
 
 	private:
-		void createPipelineLayout();
+		void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
 		void createPipeline(VkRenderPass renderPass);
 
 		AoraDevice& aoraDevice;

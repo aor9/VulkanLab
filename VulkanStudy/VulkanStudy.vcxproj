@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AoraDescriptors.cpp" />
     <ClCompile Include="src\AoraBuffer.cpp" />
     <ClCompile Include="src\KeyboardMovementController.cpp" />
     <ClCompile Include="src\AoraCamera.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="src\SimpleRenderSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AoraDescriptors.h" />
     <ClInclude Include="src\AoraBuffer.h" />
     <ClInclude Include="src\AoraFrameInfo.h" />
     <ClInclude Include="src\AoraUtils.h" />

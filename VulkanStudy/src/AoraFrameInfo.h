@@ -13,5 +13,6 @@ namespace aor
 		float frameTime;
 		VkCommandBuffer commandBuffer;
 		AoraCamera& camera;
+		VkDescriptorSet globlaDescriptorSet;
 	};
 }
